@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}
+Log In | User Portal
+{% endblock %}
+
+
+{% block content %}
+
+<div class="form-card login-card">
+
+    <div class="card-heading">
+
+        <h1>Welcome Back</h1>
+
+        <p>
+            Enter your username and password
+            to retrieve your stored information.
+        </p>
+
+    </div>
+
+
+    <form method="POST">
+
+        <div class="form-group">
+
+            <label for="username">
+                Username
+            </label>
+
+            <input
+                type="text"
+                id="username"
+                name="username"
+                required
+                autocomplete="username"
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="password">
+                Password
+            </label>
+
+            <input
+                type="password"
+                id="password"
+                name="password"
+                required
+                autocomplete="current-password"
+            >
+
+        </div>
+
+
+        <button
+            type="submit"
+            class="primary-button"
+        >
+            Log In
+        </button>
+
+    </form>
+
+
+    <div class="form-footer">
+
+        Don't have an account?
+
+        <a href="{{ url_for('register') }}">
+            Register here
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

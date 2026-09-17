@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block title %}
+Profile | User Portal
+{% endblock %}
+
+
+{% block content %}
+
+<div class="profile-card">
+
+    <div class="profile-header">
+
+        <div class="profile-icon">
+
+            {{ user["first_name"][0] }}
+            {{ user["last_name"][0] }}
+
+        </div>
+
+
+        <div>
+
+            <h1>
+                Welcome, {{ user["first_name"] }}!
+            </h1>
+
+            <p>
+                Your stored registration information
+                is shown below.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="section-title">
+        Personal Information
+    </div>
+
+
+    <div class="profile-grid">
+
+        <div class="info-box">
+
+            <span class="info-label">
+                First Name
+            </span>
+
+            <span class="info-value">
+                {{ user["first_name"] }}
+            </span>
+
+        </div>
+
+
+        <div class="info-box">
+
+            <span class="info-label">
+                Last Name
+            </span>
+
+            <span class="info-value">
+                {{ user["last_name"] }}
+            </span>
+
+        </div>
+
+
+        <div class="info-box">
+
+            <span class="info-label">
+                Email
+            </span>
+
+            <span class="info-value">
+                {{ user["email"] }}
+            </span>
+
+        </div>
+
+
+        <div class="info-box">
+
+            <span class="info-label">
+                Address
+            </span>
+
+            <span class="info-value">
+                {{ user["address"] }}
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="section-title file-section-title">
+        Uploaded File
+    </div>
+
+
+    {% if user["original_filename"] %}
+
+        <div class="file-card">
+
+            <div>
+
+                <span class="info-label">
+                    File Name
+                </span>
+
+                <div class="file-name">
+                    {{ user["original_filename"] }}
+                </div>
+
+            </div>
+
+
+            <div class="word-count-box">
+
+                <span class="word-count-number">
+                    {{ user["word_count"] }}
+                </span>
+
+                <span class="word-count-label">
+                    Words
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <a
+            href="{{ url_for('download_file') }}"
+            class="download-button"
+        >
+            Download Uploaded File
+        </a>
+
+    {% else %}
+
+        <p>
+            No file has been uploaded
+            for this account.
+        </p>
+
+    {% endif %}
+
+
+    <div class="profile-actions">
+
+        <a
+            class="secondary-button"
+            href="{{ url_for('logout') }}"
+        >
+            Log Out
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}
