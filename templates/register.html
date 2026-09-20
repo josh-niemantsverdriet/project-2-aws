@@ -1,191 +1,179 @@
 {% extends "base.html" %}
 
 {% block title %}
-Register | User Portal
+Registration
 {% endblock %}
 
 
 {% block content %}
 
-<div class="form-card">
+<h1>Registration</h1>
 
-    <div class="card-heading">
-
-        <h1>Create Your Account</h1>
-
-        <p>
-            Register below, enter your information,
-            and upload the required text file.
-        </p>
-
-    </div>
+<p>
+    Please enter your account and personal information.
+</p>
 
 
-    <form
-        method="POST"
-        enctype="multipart/form-data"
-    >
+<form
+    method="POST"
+    enctype="multipart/form-data"
+>
 
-        <div class="section-title">
-            Account Information
-        </div>
+    <h3>Account Information</h3>
 
 
-        <div class="form-group">
+    <p>
 
-            <label for="username">
-                Username
-            </label>
+        <label for="username">
+            Username:
+        </label>
 
-            <input
-                type="text"
-                id="username"
-                name="username"
-                required
-                autocomplete="username"
-            >
+        <br>
 
-        </div>
-
-
-        <div class="form-group">
-
-            <label for="password">
-                Password
-            </label>
-
-            <input
-                type="password"
-                id="password"
-                name="password"
-                required
-                autocomplete="new-password"
-            >
-
-        </div>
-
-
-        <div class="section-title">
-            Personal Information
-        </div>
-
-
-        <div class="form-row">
-
-            <div class="form-group">
-
-                <label for="first_name">
-                    First Name
-                </label>
-
-                <input
-                    type="text"
-                    id="first_name"
-                    name="first_name"
-                    required
-                >
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label for="last_name">
-                    Last Name
-                </label>
-
-                <input
-                    type="text"
-                    id="last_name"
-                    name="last_name"
-                    required
-                >
-
-            </div>
-
-        </div>
-
-
-        <div class="form-group">
-
-            <label for="email">
-                Email
-            </label>
-
-            <input
-                type="email"
-                id="email"
-                name="email"
-                required
-            >
-
-        </div>
-
-
-        <div class="form-group">
-
-            <label for="address">
-                Address
-            </label>
-
-            <input
-                type="text"
-                id="address"
-                name="address"
-                required
-            >
-
-        </div>
-
-
-        <div class="section-title">
-            File Upload
-        </div>
-
-
-        <div class="form-group">
-
-            <label for="file">
-                Upload Limerick (1).txt
-            </label>
-
-            <input
-                type="file"
-                id="file"
-                name="file"
-                accept=".txt,text/plain"
-                required
-            >
-
-            <p class="field-help">
-                Upload the required text file.
-                Its word count will be displayed
-                after registration.
-            </p>
-
-        </div>
-
-
-        <button
-            type="submit"
-            class="primary-button"
+        <input
+            type="text"
+            id="username"
+            name="username"
+            required
         >
-            Create Account
+
+    </p>
+
+
+    <p>
+
+        <label for="password">
+            Password:
+        </label>
+
+        <br>
+
+        <input
+            type="password"
+            id="password"
+            name="password"
+            required
+        >
+
+    </p>
+
+
+    <h3>Basic User Details</h3>
+
+
+    <p>
+
+        <label for="first_name">
+            First Name:
+        </label>
+
+        <br>
+
+        <input
+            type="text"
+            id="first_name"
+            name="first_name"
+            required
+        >
+
+    </p>
+
+
+    <p>
+
+        <label for="last_name">
+            Last Name:
+        </label>
+
+        <br>
+
+        <input
+            type="text"
+            id="last_name"
+            name="last_name"
+            required
+        >
+
+    </p>
+
+
+    <p>
+
+        <label for="email">
+            Email:
+        </label>
+
+        <br>
+
+        <input
+            type="email"
+            id="email"
+            name="email"
+            required
+        >
+
+    </p>
+
+
+    <p>
+
+        <label for="address">
+            Address:
+        </label>
+
+        <br>
+
+        <input
+            type="text"
+            id="address"
+            name="address"
+            required
+        >
+
+    </p>
+
+
+    <h3>File Upload</h3>
+
+
+    <p>
+
+        <label for="file">
+            Upload Limerick (1).txt:
+        </label>
+
+        <br>
+
+        <input
+            type="file"
+            id="file"
+            name="file"
+            accept=".txt,text/plain"
+            required
+        >
+
+    </p>
+
+
+    <p>
+
+        <button type="submit">
+            Register
         </button>
 
-    </form>
+    </p>
+
+</form>
 
 
-    <div class="form-footer">
+<p>
 
-        Already registered?
+    Already registered?
 
-        <a href="{{ url_for('login') }}">
-            Log in here
-        </a>
+    <a href="{{ url_for('login') }}">
+        Log in here
+    </a>
 
-    </div>
-
-</div>
+</p>
 
 {% endblock %}

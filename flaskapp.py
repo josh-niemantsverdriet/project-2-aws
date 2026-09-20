@@ -12,27 +12,26 @@ from flask import (
     session,
     url_for
 )
+
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
 
 
 app = Flask(__name__)
 
-app.secret_key = os.environ.get(
-    "FLASK_SECRET_KEY",
-    "engr6010-assignment-secret-key"
-)
+app.secret_key = "project-2-secret-key"
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-INSTANCE_DIR = os.path.join(BASE_DIR, "instance")
 
 DATABASE = os.path.join(
-    INSTANCE_DIR,
+    BASE_DIR,
+    "instance",
     "users.db"
 )
 
 UPLOAD_FOLDER = os.path.join(
-    INSTANCE_DIR,
+    BASE_DIR,
+    "instance",
     "uploads"
 )
 
@@ -62,9 +61,9 @@ def count_words(filepath):
         encoding="utf-8",
         errors="ignore"
     ) as file:
-        contents = file.read()
+        text = file.read()
 
-    return len(contents.split())
+    return len(text.split())
 
 
 def init_db():
@@ -87,28 +86,6 @@ def init_db():
         )
     """)
 
-    columns = [
-        row["name"]
-        for row in connection.execute(
-            "PRAGMA table_info(users)"
-        ).fetchall()
-    ]
-
-    if "original_filename" not in columns:
-        connection.execute(
-            "ALTER TABLE users ADD COLUMN original_filename TEXT"
-        )
-
-    if "stored_filename" not in columns:
-        connection.execute(
-            "ALTER TABLE users ADD COLUMN stored_filename TEXT"
-        )
-
-    if "word_count" not in columns:
-        connection.execute(
-            "ALTER TABLE users ADD COLUMN word_count INTEGER"
-        )
-
     connection.commit()
     connection.close()
 
@@ -123,9 +100,12 @@ def home():
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
+
     if request.method == "POST":
+
         username = request.form["username"].strip()
         password = request.form["password"]
+
         first_name = request.form["first_name"].strip()
         last_name = request.form["last_name"].strip()
         email = request.form["email"].strip()
@@ -141,15 +121,15 @@ def register():
             email,
             address
         ]):
-            flash("Please complete every field.", "error")
+            flash("Please complete all fields.")
             return render_template("register.html")
 
         if uploaded_file is None or uploaded_file.filename == "":
-            flash("Please select a text file to upload.", "error")
+            flash("Please upload a text file.")
             return render_template("register.html")
 
         if not allowed_file(uploaded_file.filename):
-            flash("Only .txt files may be uploaded.", "error")
+            flash("Only .txt files are allowed.")
             return render_template("register.html")
 
         connection = get_db_connection()
@@ -161,23 +141,30 @@ def register():
 
         if existing_user:
             connection.close()
-            flash("That username is already registered.", "error")
+
+            flash("That username already exists.")
             return render_template("register.html")
 
-        original_filename = secure_filename(uploaded_file.filename)
+        original_filename = secure_filename(
+            uploaded_file.filename
+        )
 
-        unique_filename = (
+        stored_filename = (
             f"{uuid.uuid4().hex}_{original_filename}"
         )
 
         filepath = os.path.join(
             app.config["UPLOAD_FOLDER"],
-            unique_filename
+            stored_filename
         )
 
         uploaded_file.save(filepath)
+
         word_count = count_words(filepath)
-        password_hash = generate_password_hash(password)
+
+        password_hash = generate_password_hash(
+            password
+        )
 
         cursor = connection.execute("""
             INSERT INTO users (
@@ -200,20 +187,17 @@ def register():
             email,
             address,
             original_filename,
-            unique_filename,
+            stored_filename,
             word_count
         ))
 
         connection.commit()
+
         user_id = cursor.lastrowid
+
         connection.close()
 
         session["user_id"] = user_id
-
-        flash(
-            "Registration and file upload successful!",
-            "success"
-        )
 
         return redirect(url_for("profile"))
 
@@ -222,13 +206,10 @@ def register():
 
 @app.route("/profile")
 def profile():
+
     user_id = session.get("user_id")
 
     if user_id is None:
-        flash(
-            "Please log in to view your information.",
-            "error"
-        )
         return redirect(url_for("login"))
 
     connection = get_db_connection()
@@ -250,44 +231,11 @@ def profile():
     )
 
 
-@app.route("/download")
-def download_file():
-    user_id = session.get("user_id")
-
-    if user_id is None:
-        flash(
-            "Please log in to download your file.",
-            "error"
-        )
-        return redirect(url_for("login"))
-
-    connection = get_db_connection()
-
-    user = connection.execute(
-        "SELECT * FROM users WHERE id = ?",
-        (user_id,)
-    ).fetchone()
-
-    connection.close()
-
-    if user is None or not user["stored_filename"]:
-        flash(
-            "No uploaded file was found.",
-            "error"
-        )
-        return redirect(url_for("profile"))
-
-    return send_from_directory(
-        app.config["UPLOAD_FOLDER"],
-        user["stored_filename"],
-        as_attachment=True,
-        download_name=user["original_filename"]
-    )
-
-
 @app.route("/login", methods=["GET", "POST"])
 def login():
+
     if request.method == "POST":
+
         username = request.form["username"].strip()
         password = request.form["password"]
 
@@ -307,33 +255,51 @@ def login():
                 password
             )
         ):
-            flash(
-                "Incorrect username or password.",
-                "error"
-            )
+            flash("Incorrect username or password.")
             return render_template("login.html")
 
         session.clear()
-        session["user_id"] = user["id"]
 
-        flash(
-            "Login successful.",
-            "success"
-        )
+        session["user_id"] = user["id"]
 
         return redirect(url_for("profile"))
 
     return render_template("login.html")
 
 
+@app.route("/download")
+def download_file():
+
+    user_id = session.get("user_id")
+
+    if user_id is None:
+        return redirect(url_for("login"))
+
+    connection = get_db_connection()
+
+    user = connection.execute(
+        "SELECT * FROM users WHERE id = ?",
+        (user_id,)
+    ).fetchone()
+
+    connection.close()
+
+    if user is None or not user["stored_filename"]:
+        flash("No uploaded file was found.")
+        return redirect(url_for("profile"))
+
+    return send_from_directory(
+        app.config["UPLOAD_FOLDER"],
+        user["stored_filename"],
+        as_attachment=True,
+        download_name=user["original_filename"]
+    )
+
+
 @app.route("/logout")
 def logout():
-    session.clear()
 
-    flash(
-        "You have been logged out.",
-        "success"
-    )
+    session.clear()
 
     return redirect(url_for("login"))
 

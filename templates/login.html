@@ -1,82 +1,77 @@
 {% extends "base.html" %}
 
 {% block title %}
-Log In | User Portal
+Login
 {% endblock %}
 
 
 {% block content %}
 
-<div class="form-card login-card">
+<h1>Login</h1>
 
-    <div class="card-heading">
-
-        <h1>Welcome Back</h1>
-
-        <p>
-            Enter your username and password
-            to retrieve your stored information.
-        </p>
-
-    </div>
+<p>
+    Enter your username and password
+    to retrieve your information.
+</p>
 
 
-    <form method="POST">
+<form method="POST">
 
-        <div class="form-group">
+    <p>
 
-            <label for="username">
-                Username
-            </label>
+        <label for="username">
+            Username:
+        </label>
 
-            <input
-                type="text"
-                id="username"
-                name="username"
-                required
-                autocomplete="username"
-            >
+        <br>
 
-        </div>
-
-
-        <div class="form-group">
-
-            <label for="password">
-                Password
-            </label>
-
-            <input
-                type="password"
-                id="password"
-                name="password"
-                required
-                autocomplete="current-password"
-            >
-
-        </div>
-
-
-        <button
-            type="submit"
-            class="primary-button"
+        <input
+            type="text"
+            id="username"
+            name="username"
+            required
         >
+
+    </p>
+
+
+    <p>
+
+        <label for="password">
+            Password:
+        </label>
+
+        <br>
+
+        <input
+            type="password"
+            id="password"
+            name="password"
+            required
+        >
+
+    </p>
+
+
+    <p>
+
+        <button type="submit">
             Log In
         </button>
 
-    </form>
+    </p>
+
+</form>
 
 
-    <div class="form-footer">
+<p>
 
-        Don't have an account?
+    Need an account?
 
-        <a href="{{ url_for('register') }}">
-            Register here
-        </a>
+    <a href="{{ url_for('register') }}">
+        Register here
+    </a>
 
-    </div>
-
-</div>
+</p>
 
 {% endblock %}

@@ -2,87 +2,58 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
     <title>
         {% block title %}
-        User Portal
+        Flask User Portal
         {% endblock %}
     </title>
-
-    <link
-        rel="stylesheet"
-        href="{{ url_for('static', filename='style.css') }}"
-    >
-
 </head>
-
 
 <body>
 
-<nav class="navbar">
+    <h2>Flask User Portal</h2>
 
-    <div class="nav-content">
-
-        <a
-            class="brand"
-            href="{{ url_for('register') }}"
-        >
-            User Portal
+    <p>
+        <a href="{{ url_for('register') }}">
+            Register
         </a>
 
-        <div class="nav-links">
+        {% if session.get("user_id") %}
 
-            <a href="{{ url_for('register') }}">
-                Register
+            |
+            <a href="{{ url_for('profile') }}">
+                Profile
             </a>
 
-            {% if session.get("user_id") %}
+            |
+            <a href="{{ url_for('logout') }}">
+                Log Out
+            </a>
 
-                <a href="{{ url_for('profile') }}">
-                    Profile
-                </a>
+        {% else %}
 
-                <a href="{{ url_for('logout') }}">
-                    Log Out
-                </a>
+            |
+            <a href="{{ url_for('login') }}">
+                Log In
+            </a>
 
-            {% else %}
+        {% endif %}
+    </p>
 
-                <a href="{{ url_for('login') }}">
-                    Log In
-                </a>
+    <hr>
 
-            {% endif %}
-
-        </div>
-
-    </div>
-
-</nav>
-
-
-<main class="page-container">
-
-    {% with messages =
-        get_flashed_messages(
-            with_categories=true
-        )
-    %}
+    {% with messages = get_flashed_messages() %}
 
         {% if messages %}
 
-            {% for category, message in messages %}
+            {% for message in messages %}
 
-                <div class="alert {{ category }}">
-                    {{ message }}
-                </div>
+                <p>
+                    <strong>
+                        {{ message }}
+                    </strong>
+                </p>
 
             {% endfor %}
 
@@ -93,8 +64,6 @@
 
     {% block content %}
     {% endblock %}
-
-</main>
 
 </body>
 
